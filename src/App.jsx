@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Home, FileText, MessageCircle, Heart, Wallet, X, LogOut } from 'lucide-react';
+import { Home, FileText, MessageCircle, Heart, Wallet, X, LogOut, Shield } from 'lucide-react';
 import Cockpit from './pages/Cockpit';
 import MesAssurances from './pages/MesAssurances';
 import Chat from './pages/Chat';
 import Sante from './pages/Sante';
 import Onboarding from './pages/Onboarding';
 import Auth from './pages/Auth';
+import Admin from './pages/Admin';
 import { supabase, signOut, getCurrentUser } from './services/supabase';
 import './index.css';
 
@@ -15,6 +16,8 @@ function App() {
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
   const [currentPage, setCurrentPage] = useState('cockpit');
   const [showWallet, setShowWallet] = useState(false);
+  // Check if accessing /admin via URL
+  const [showAdmin, setShowAdmin] = useState(window.location.pathname === '/admin');
 
   // Check auth state on mount
   useEffect(() => {
@@ -101,6 +104,15 @@ function App() {
     return <Auth onAuthSuccess={(u) => setUser(u)} />;
   }
 
+  // Show Admin panel (accessible even without onboarding)
+  if (showAdmin) {
+    return <Admin onBack={() => {
+      setShowAdmin(false);
+      // Update URL when leaving admin
+      window.history.pushState({}, '', '/');
+    }} />;
+  }
+
   // Logged in but hasn't completed onboarding → show Onboarding
   if (!hasCompletedOnboarding) {
     return <Onboarding onComplete={handleOnboardingComplete} userId={user.id} />;
@@ -120,6 +132,14 @@ function App() {
           <button className="wallet-btn" onClick={() => setShowWallet(true)}>
             <Wallet size={16} />
             <span>{walletData.totalCommissions.toFixed(2)} CHF</span>
+          </button>
+          <button
+            className="wallet-btn"
+            onClick={() => setShowAdmin(true)}
+            style={{ background: 'var(--card-purple)', padding: '10px' }}
+            title="Admin"
+          >
+            <Shield size={16} />
           </button>
           <button
             className="wallet-btn"
