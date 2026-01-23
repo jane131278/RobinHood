@@ -7,6 +7,7 @@ import Sante from './pages/Sante';
 import Onboarding from './pages/Onboarding';
 import Auth from './pages/Auth';
 import Admin from './pages/Admin';
+import AdminLogin from './pages/AdminLogin';
 import { supabase, signOut, getCurrentUser } from './services/supabase';
 import './index.css';
 
@@ -18,6 +19,10 @@ function App() {
   const [showWallet, setShowWallet] = useState(false);
   // Check if accessing /admin via URL
   const [showAdmin, setShowAdmin] = useState(window.location.pathname === '/admin');
+  // Admin authentication state
+  const [adminAuthenticated, setAdminAuthenticated] = useState(
+    sessionStorage.getItem('adminAuthenticated') === 'true'
+  );
 
   // Check auth state on mount
   useEffect(() => {
