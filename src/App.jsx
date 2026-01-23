@@ -111,6 +111,10 @@ function App() {
 
   // Show Admin panel (accessible even without onboarding)
   if (showAdmin) {
+    // Check if admin is authenticated
+    if (!adminAuthenticated) {
+      return <AdminLogin onLoginSuccess={() => setAdminAuthenticated(true)} />;
+    }
     return <Admin onBack={() => {
       setShowAdmin(false);
       // Update URL when leaving admin
