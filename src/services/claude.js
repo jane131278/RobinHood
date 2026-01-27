@@ -133,6 +133,15 @@ export async function analyzeLAMalPolicy(base64Content, mediaType = 'application
     const systemPrompt = `Tu es un expert en assurances maladie suisses (LAMal). Analyse ce certificat d'assurance maladie et extrais les informations suivantes au format JSON strict:
 
 {
+  "assure": {
+    "nom": "nom de famille de l'assuré",
+    "prenom": "prénom de l'assuré",
+    "date_naissance": "date de naissance au format YYYY-MM-DD",
+    "adresse": "adresse complète",
+    "code_postal": "code postal (4 chiffres)",
+    "localite": "ville/localité",
+    "canton": "code canton à 2 lettres (GE, VD, ZH, etc.)"
+  },
   "assureur": "nom de la compagnie (ex: Groupe Mutuel, CSS, Helsana...)",
   "produit": "nom du produit d'assurance (ex: OptiMed, Sana...)",
   "modele": "standard|medecin_famille|hmo|telmed",
@@ -156,6 +165,8 @@ export async function analyzeLAMalPolicy(base64Content, mediaType = 'application
 IMPORTANT: 
 - Pour le modèle, utilise "medecin_famille" si c'est un modèle médecin de premier recours/médecin de famille
 - La prime_mensuelle doit être le montant FINAL à payer (après déductions)
+- Le canton doit être le code à 2 lettres (GE pour Genève, VD pour Vaud, etc.)
+- Déduis le canton du code postal si non explicite (12xx = GE, 10xx = VD, 80xx = ZH, etc.)
 - Réponds UNIQUEMENT avec le JSON valide, sans markdown, sans texte avant/après`;
 
     try {
